@@ -56,6 +56,7 @@ HRESULT CSampleCredential::call_multiotp(_In_ PCWSTR username, _In_ PCWSTR PREV_
 	PWSTR path;
 
 	len = wcslen(username);
+	len += 2;//quoted "user name"
 	if (wcslen(PREV_PIN) > 0) {
 		len += wcslen(PREV_PIN);
 		len += 1;//space char
@@ -81,8 +82,9 @@ HRESULT CSampleCredential::call_multiotp(_In_ PCWSTR username, _In_ PCWSTR PREV_
 	}
 
 	//cmd = StrDup(cmd);
+	wcscat_s(cmd, 1024, L"\"");//quoted "user name"
 	wcscat_s(cmd, 1024, username);
-	wcscat_s(cmd, 1024, L" ");
+	wcscat_s(cmd, 1024, L"\" ");//quoted "user name"
 	//cmd = StrCat(cmd, username);
 	//cmd = StrCat(cmd, L" ");
 
@@ -605,7 +607,7 @@ HRESULT CSampleCredential::SetStringValue(DWORD dwFieldID, _In_ PCWSTR pwz)
 		//validate numbers only for PIN Fields !!!!
 		
 		if ((dwFieldID == SFI_PIN) || (dwFieldID == SFI_PREV_PIN)){
-			int len;
+			size_t len;
 			
 			//if (DEVELOPING) PrintLn(L"New PIN input:", pwz);
 
